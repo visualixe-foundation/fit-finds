@@ -31,8 +31,15 @@
   body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); }
   .wrap { max-width:960px; margin:0 auto; padding:20px 16px 80px; }
   header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:4px; }
-  h1 { font-size:1.65rem; margin:0; cursor:default; }
+  h1 { font-size:1.65rem; margin:0; }
   .sub { color:var(--muted); margin:0 0 16px; font-size:.95rem; }
+  .add-btn {
+    display:inline-flex; align-items:center; gap:4px;
+    padding:8px 16px; border-radius:999px; border:1px solid var(--line);
+    background:var(--card); color:var(--text); font-size:.95rem;
+    font-weight:500; cursor:pointer; white-space:nowrap; flex-shrink:0;
+  }
+  .add-btn:hover { border-color:var(--accent); color:var(--accent); }
   .toolbar { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
   input, select {
     padding:11px 14px; font-size:1rem; border:1px solid var(--line);
@@ -112,9 +119,10 @@
 <div class="wrap">
   <header>
     <div>
-      <h1 id="title">Fit Finds</h1>
+      <h1>Fit Finds</h1>
       <p class="sub">Curated fashion IG accounts & shops</p>
     </div>
+    <button class="add-btn" id="openAdd" type="button">+ Add</button>
   </header>
 
   <p class="count" id="count"></p>
@@ -133,10 +141,10 @@
   <div class="grid" id="grid"></div>
 </div>
 
-<!-- Admin panel (tap title 5 times to open) -->
+<!-- Admin panel -->
 <div class="admin-bar" id="adminBar">
   <div class="admin-inner">
-    <h2>Admin — Add / Edit account</h2>
+    <h2>Add / Edit account</h2>
     <div class="admin-form">
       <input id="aUser" placeholder="Username (no @)" autocomplete="off">
       <select id="aCat">
@@ -370,18 +378,11 @@ sortEl.addEventListener("change", function() {
   render();
 });
 
-/* Admin: open by tapping title 5 times */
-let titleTaps = 0;
-let titleTimer;
-document.getElementById("title").addEventListener("click", function() {
-  titleTaps++;
-  clearTimeout(titleTimer);
-  titleTimer = setTimeout(function() { titleTaps = 0; }, 800);
-  if (titleTaps >= 5) {
-    titleTaps = 0;
-    adminBar.classList.add("open");
-  }
-});
+/* Open admin with + Add button */
+document.getElementById("openAdd").onclick = function() {
+  adminBar.classList.add("open");
+  document.getElementById("aUser").focus();
+};
 
 document.getElementById("aClose").onclick = function() {
   adminBar.classList.remove("open");
@@ -418,13 +419,6 @@ document.getElementById("aAdd").onclick = function() {
 };
 
 document.getElementById("aExport").onclick = function() {
-  const text = "const DEFAULT_PROFILES = " +
-    JSON.stringify(PROFILES, null, 2)
-      .replace(/"([^\"]+)":/g, "$1:")
-      .replace(/"/g, "'\"")
-      .replace(/'\"/g, "\"") +
-    ";";
-  // simpler export as JSON
   const json = JSON.stringify(PROFILES, null, 2);
   navigator.clipboard.writeText(json).then(function() {
     showToast("Copied to clipboard");
