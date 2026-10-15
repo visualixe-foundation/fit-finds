@@ -4,8 +4,8 @@
   "description": "Curated fashion Instagram accounts and shops",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#faf7f5",
-  "theme_color": "#c2410c",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
   "orientation": "portrait-primary",
   "icons": [
     {
