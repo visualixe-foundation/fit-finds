@@ -85,6 +85,34 @@
   .empty { color:var(--muted); text-align:center; padding:48px 0; grid-column:1/-1; }
   .count { color:var(--muted); font-size:.9rem; margin:0 0 8px; }
 
+  /* PIN modal */
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.55);
+    display:none; align-items:center; justify-content:center;
+    z-index:100; padding:16px;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:24px 22px; width:100%; max-width:340px; text-align:center;
+    box-shadow:0 12px 40px rgba(0,0,0,.25);
+  }
+  .modal h2 { margin:0 0 6px; font-size:1.25rem; }
+  .modal p { margin:0 0 16px; color:var(--muted); font-size:.9rem; }
+  .modal input {
+    width:100%; text-align:center; letter-spacing:0.35em; font-size:1.15rem;
+    padding:12px; border-radius:10px; margin-bottom:14px;
+  }
+  .modal-actions { display:flex; gap:10px; }
+  .modal-actions button {
+    flex:1; padding:11px; border-radius:10px; border:1px solid var(--line);
+    font-size:.95rem; cursor:pointer; background:var(--bg); color:var(--text);
+  }
+  .modal-actions button.primary {
+    background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600;
+  }
+  .modal .err { color:#dc2626; font-size:.85rem; margin:-6px 0 10px; min-height:1.2em; }
+
   /* Admin panel */
   .admin-bar {
     position:fixed; bottom:0; left:0; right:0; background:var(--card);
@@ -139,6 +167,20 @@
 
   <div class="chips" id="chips"></div>
   <div class="grid" id="grid"></div>
+</div>
+
+<!-- PIN modal -->
+<div class="modal-overlay" id="pinModal">
+  <div class="modal">
+    <h2>Admin</h2>
+    <p id="pinHint">Enter PIN to add accounts (stored only on this device)</p>
+    <input id="pinInput" type="password" inputmode="numeric" maxlength="8" placeholder="PIN" autocomplete="off">
+    <div class="err" id="pinErr"></div>
+    <div class="modal-actions">
+      <button class="primary" id="pinUnlock" type="button">Unlock</button>
+      <button id="pinCancel" type="button">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <!-- Admin panel -->
@@ -205,9 +247,13 @@ const DEFAULT_PROFILES = [
 /* ====================== */
 
 const STORAGE_KEY = "fit-finds-profiles";
+const PIN_KEY = "fit-finds-pin";
+const UNLOCK_KEY = "fit-finds-unlocked";
+
 let PROFILES = loadProfiles();
 let active = "All";
 let sortBy = "name";
+let unlocked = sessionStorage.getItem(UNLOCK_KEY) === "1";
 
 const grid = document.getElementById("grid");
 const chips = document.getElementById("chips");
@@ -215,6 +261,10 @@ const q = document.getElementById("q");
 const countEl = document.getElementById("count");
 const sortEl = document.getElementById("sort");
 const adminBar = document.getElementById("adminBar");
+const pinModal = document.getElementById("pinModal");
+const pinInput = document.getElementById("pinInput");
+const pinErr = document.getElementById("pinErr");
+const pinHint = document.getElementById("pinHint");
 const toast = document.getElementById("toast");
 
 function loadProfiles() {
@@ -230,6 +280,10 @@ function loadProfiles() {
 
 function saveProfiles() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(PROFILES));
+}
+
+function getStoredPin() {
+  return localStorage.getItem(PIN_KEY) || "";
 }
 
 function showToast(msg) {
@@ -372,17 +426,75 @@ function render() {
   });
 }
 
+function openAdmin() {
+  pinModal.classList.remove("open");
+  adminBar.classList.add("open");
+  document.getElementById("aUser").focus();
+}
+
+function showPinModal() {
+  const hasPin = !!getStoredPin();
+  pinHint.textContent = hasPin
+    ? "Enter PIN to add accounts (stored only on this device)"
+    : "Set a PIN to protect adding accounts (stored only on this device)";
+  pinInput.value = "";
+  pinErr.textContent = "";
+  pinModal.classList.add("open");
+  setTimeout(function() { pinInput.focus(); }, 50);
+}
+
 q.addEventListener("input", render);
 sortEl.addEventListener("change", function() {
   sortBy = sortEl.value;
   render();
 });
 
-/* Open admin with + Add button */
 document.getElementById("openAdd").onclick = function() {
-  adminBar.classList.add("open");
-  document.getElementById("aUser").focus();
+  if (unlocked) {
+    openAdmin();
+    return;
+  }
+  showPinModal();
 };
+
+document.getElementById("pinCancel").onclick = function() {
+  pinModal.classList.remove("open");
+};
+
+document.getElementById("pinUnlock").onclick = function() {
+  const val = pinInput.value.trim();
+  if (!val) {
+    pinErr.textContent = "Enter a PIN";
+    return;
+  }
+  const stored = getStoredPin();
+  if (!stored) {
+    // First time: set the PIN
+    if (val.length < 4) {
+      pinErr.textContent = "PIN must be at least 4 characters";
+      return;
+    }
+    localStorage.setItem(PIN_KEY, val);
+    unlocked = true;
+    sessionStorage.setItem(UNLOCK_KEY, "1");
+    showToast("PIN set");
+    openAdmin();
+    return;
+  }
+  if (val === stored) {
+    unlocked = true;
+    sessionStorage.setItem(UNLOCK_KEY, "1");
+    openAdmin();
+  } else {
+    pinErr.textContent = "Wrong PIN";
+    pinInput.value = "";
+    pinInput.focus();
+  }
+};
+
+pinInput.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") document.getElementById("pinUnlock").click();
+});
 
 document.getElementById("aClose").onclick = function() {
   adminBar.classList.remove("open");
