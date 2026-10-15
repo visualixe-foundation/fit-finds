@@ -173,8 +173,8 @@
 <div class="modal-overlay" id="pinModal">
   <div class="modal">
     <h2>Admin</h2>
-    <p id="pinHint">Enter PIN to add accounts (stored only on this device)</p>
-    <input id="pinInput" type="password" inputmode="numeric" maxlength="8" placeholder="PIN" autocomplete="off">
+    <p>Enter PIN to add accounts</p>
+    <input id="pinInput" type="password" inputmode="numeric" maxlength="12" placeholder="PIN" autocomplete="off">
     <div class="err" id="pinErr"></div>
     <div class="modal-actions">
       <button class="primary" id="pinUnlock" type="button">Unlock</button>
@@ -213,6 +213,10 @@
 <div class="toast" id="toast"></div>
 
 <script>
+/* ==== OWNER PIN — change this to whatever you want ====*/
+const ADMIN_PIN = "2550";
+/* ====================================================== */
+
 /* ==== DEFAULT DATA ====*/
 const DEFAULT_PROFILES = [
   { username: "odemawear", category: "Streetwear", website: "https://odemawear.com", note: "" },
@@ -247,7 +251,6 @@ const DEFAULT_PROFILES = [
 /* ====================== */
 
 const STORAGE_KEY = "fit-finds-profiles";
-const PIN_KEY = "fit-finds-pin";
 const UNLOCK_KEY = "fit-finds-unlocked";
 
 let PROFILES = loadProfiles();
@@ -264,7 +267,6 @@ const adminBar = document.getElementById("adminBar");
 const pinModal = document.getElementById("pinModal");
 const pinInput = document.getElementById("pinInput");
 const pinErr = document.getElementById("pinErr");
-const pinHint = document.getElementById("pinHint");
 const toast = document.getElementById("toast");
 
 function loadProfiles() {
@@ -280,10 +282,6 @@ function loadProfiles() {
 
 function saveProfiles() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(PROFILES));
-}
-
-function getStoredPin() {
-  return localStorage.getItem(PIN_KEY) || "";
 }
 
 function showToast(msg) {
@@ -433,10 +431,6 @@ function openAdmin() {
 }
 
 function showPinModal() {
-  const hasPin = !!getStoredPin();
-  pinHint.textContent = hasPin
-    ? "Enter PIN to add accounts (stored only on this device)"
-    : "Set a PIN to protect adding accounts (stored only on this device)";
   pinInput.value = "";
   pinErr.textContent = "";
   pinModal.classList.add("open");
@@ -467,21 +461,7 @@ document.getElementById("pinUnlock").onclick = function() {
     pinErr.textContent = "Enter a PIN";
     return;
   }
-  const stored = getStoredPin();
-  if (!stored) {
-    // First time: set the PIN
-    if (val.length < 4) {
-      pinErr.textContent = "PIN must be at least 4 characters";
-      return;
-    }
-    localStorage.setItem(PIN_KEY, val);
-    unlocked = true;
-    sessionStorage.setItem(UNLOCK_KEY, "1");
-    showToast("PIN set");
-    openAdmin();
-    return;
-  }
-  if (val === stored) {
+  if (val === ADMIN_PIN) {
     unlocked = true;
     sessionStorage.setItem(UNLOCK_KEY, "1");
     openAdmin();
