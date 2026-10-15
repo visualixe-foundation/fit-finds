@@ -3,109 +3,291 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fashion IG List</title>
+<title>Fit Finds — Curated Fashion IG Accounts</title>
+<meta name="description" content="Curated list of fashion Instagram accounts and shops. Discover streetwear, luxury, sportswear, local Dar finds and more.">
+<meta name="theme-color" content="#c2410c">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.json">
+<meta property="og:title" content="Fit Finds">
+<meta property="og:description" content="Curated fashion Instagram accounts and shops in one place.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fit-finds.vercel.app">
+<meta property="og:image" content="https://fit-finds.vercel.app/favicon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Fit Finds">
+<meta name="twitter:description" content="Curated fashion Instagram accounts and shops in one place.">
 <style>
-  :root { --bg:#faf7f5; --card:#fff; --text:#1f1a1a; --muted:#7a6f6f; --accent:#c2410c; --line:#eadfd9; }
+  :root {
+    --bg:#faf7f5; --card:#fff; --text:#1f1a1a; --muted:#7a6f6f;
+    --accent:#c2410c; --line:#eadfd9; --ok:#15803d;
+  }
   @media (prefers-color-scheme: dark) {
-    :root { --bg:#161212; --card:#211b1b; --text:#f3ecea; --muted:#a89c9a; --accent:#fb923c; --line:#332a2a; }
+    :root {
+      --bg:#161212; --card:#211b1b; --text:#f3ecea; --muted:#a89c9a;
+      --accent:#fb923c; --line:#332a2a; --ok:#4ade80;
+    }
   }
   * { box-sizing: border-box; }
-  body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--text); }
-  .wrap { max-width:900px; margin:0 auto; padding:20px 16px 60px; }
-  h1 { font-size:1.6rem; margin:0 0 4px; }
-  .sub { color:var(--muted); margin:0 0 16px; }
-  input { width:100%; padding:12px 14px; font-size:1rem; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--text); }
-  .chips { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 18px; }
-  .chip { padding:6px 14px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; font-size:.9rem; }
+  body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); }
+  .wrap { max-width:960px; margin:0 auto; padding:20px 16px 80px; }
+  header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:4px; }
+  h1 { font-size:1.65rem; margin:0; cursor:default; }
+  .sub { color:var(--muted); margin:0 0 16px; font-size:.95rem; }
+  .toolbar { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
+  input, select {
+    padding:11px 14px; font-size:1rem; border:1px solid var(--line);
+    border-radius:10px; background:var(--card); color:var(--text);
+  }
+  #q { flex:1; min-width:180px; }
+  select { min-width:140px; cursor:pointer; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 18px; }
+  .chip {
+    padding:6px 14px; border-radius:999px; border:1px solid var(--line);
+    background:var(--card); color:var(--text); cursor:pointer; font-size:.9rem;
+  }
   .chip.on { background:var(--accent); border-color:var(--accent); color:#fff; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; }
-  .card h3 { margin:0 0 2px; font-size:1.05rem; word-break:break-all; }
-  .tag { font-size:.75rem; color:var(--muted); }
-  .note { font-size:.9rem; color:var(--muted); margin:8px 0 0; }
-  .btns { display:flex; gap:8px; margin-top:12px; }
-  .btns a { flex:1; text-align:center; padding:8px; border-radius:8px; text-decoration:none; font-size:.9rem; border:1px solid var(--accent); color:var(--accent); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
+  .card {
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:14px; display:flex; flex-direction:column; gap:6px;
+  }
+  .card-top { display:flex; gap:12px; align-items:center; }
+  .avatar {
+    width:48px; height:48px; border-radius:50%; object-fit:cover;
+    background:var(--line); flex-shrink:0;
+  }
+  .avatar-fallback {
+    width:48px; height:48px; border-radius:50%; background:var(--accent);
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:1.1rem; flex-shrink:0;
+  }
+  .card h3 { margin:0; font-size:1.02rem; word-break:break-all; }
+  .tag {
+    display:inline-block; font-size:.72rem; color:var(--muted);
+    background:var(--bg); border:1px solid var(--line);
+    padding:2px 8px; border-radius:999px; margin-top:2px;
+  }
+  .note { font-size:.88rem; color:var(--muted); margin:4px 0 0; }
+  .btns { display:flex; gap:8px; margin-top:auto; padding-top:10px; }
+  .btns a, .btns button {
+    flex:1; text-align:center; padding:8px; border-radius:8px;
+    text-decoration:none; font-size:.88rem; border:1px solid var(--accent);
+    color:var(--accent); background:transparent; cursor:pointer;
+  }
   .btns a.ig { background:var(--accent); color:#fff; }
-  .empty { color:var(--muted); text-align:center; padding:40px 0; }
+  .empty { color:var(--muted); text-align:center; padding:48px 0; grid-column:1/-1; }
+  .count { color:var(--muted); font-size:.9rem; margin:0 0 8px; }
+
+  /* Admin panel */
+  .admin-bar {
+    position:fixed; bottom:0; left:0; right:0; background:var(--card);
+    border-top:1px solid var(--line); padding:10px 16px; display:none;
+    z-index:50; box-shadow:0 -4px 20px rgba(0,0,0,.08);
+  }
+  .admin-bar.open { display:block; }
+  .admin-inner { max-width:960px; margin:0 auto; }
+  .admin-inner h2 { margin:0 0 10px; font-size:1rem; }
+  .admin-form { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .admin-form input, .admin-form select { width:100%; }
+  .admin-form .full { grid-column:1/-1; }
+  .admin-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .admin-actions button {
+    padding:8px 14px; border-radius:8px; border:1px solid var(--line);
+    background:var(--bg); color:var(--text); cursor:pointer; font-size:.9rem;
+  }
+  .admin-actions button.primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .admin-hint { font-size:.8rem; color:var(--muted); margin-top:8px; }
+  .toast {
+    position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
+    background:#1f1a1a; color:#fff; padding:10px 18px; border-radius:10px;
+    font-size:.9rem; opacity:0; transition:opacity .25s; z-index:60; pointer-events:none;
+  }
+  .toast.show { opacity:1; }
+  @media (max-width:560px) {
+    .admin-form { grid-template-columns:1fr; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Fashion IG List</h1>
-  <p class="sub" id="count"></p>
-  <input id="q" type="search" placeholder="Search username, note or category...">
+  <header>
+    <div>
+      <h1 id="title">Fit Finds</h1>
+      <p class="sub">Curated fashion IG accounts & shops</p>
+    </div>
+  </header>
+
+  <p class="count" id="count"></p>
+
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="Search username, note or category..." autocomplete="off">
+    <select id="sort">
+      <option value="name">Name A–Z</option>
+      <option value="website">Has website first</option>
+      <option value="dar">Local (Dar) first</option>
+      <option value="category">Category</option>
+    </select>
+  </div>
+
   <div class="chips" id="chips"></div>
   <div class="grid" id="grid"></div>
 </div>
+
+<!-- Admin panel (tap title 5 times to open) -->
+<div class="admin-bar" id="adminBar">
+  <div class="admin-inner">
+    <h2>Admin — Add / Edit account</h2>
+    <div class="admin-form">
+      <input id="aUser" placeholder="Username (no @)" autocomplete="off">
+      <select id="aCat">
+        <option value="Streetwear">Streetwear</option>
+        <option value="Luxury">Luxury</option>
+        <option value="Sportswear">Sportswear</option>
+        <option value="Local (Dar)">Local (Dar)</option>
+        <option value="International">International</option>
+        <option value="Shoes">Shoes</option>
+      </select>
+      <input id="aWeb" class="full" placeholder="Website (optional, e.g. https://shop.com)">
+      <input id="aNote" class="full" placeholder="Note (optional)">
+    </div>
+    <div class="admin-actions">
+      <button class="primary" id="aAdd">Add / Update</button>
+      <button id="aExport">Export data (copy)</button>
+      <button id="aReset">Reset to original</button>
+      <button id="aClose">Close</button>
+    </div>
+    <p class="admin-hint">Changes are saved in this browser only. Use “Export data” then paste into the code to make them permanent.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-/* ==== EDIT HERE: add your accounts from the book ====
-   username: without the @
-   category: Clothes, Shoes, Bags, Accessories, etc (any word works)
-   website:  optional, leave empty string if none
-   note:     optional
-*/
-const PROFILES = [
-  { username: "odemawear", category: "Clothes", website: "https://odemawear.com", note: "" },
-  { username: "asiamixx_man", category: "Clothes", website: "", note: "" },
-  { username: "asiamixx_moskva", category: "Clothes", website: "", note: "" },
-  { username: "suvenehomme", category: "Clothes", website: "https://suvene.de", note: "" },
-  { username: "kalaamode", category: "Clothes", website: "", note: "" },
-  { username: "zagmin", category: "Clothes", website: "", note: "" },
-  { username: "sportpacks_", category: "Sports", website: "https://sportpacks.de", note: "" },
-  { username: "pelak_collection", category: "Clothes", website: "", note: "" },
-  { username: "sanethreadss", category: "Clothes", website: "https://sanethreads.com", note: "" },
+/* ==== DEFAULT DATA ====*/
+const DEFAULT_PROFILES = [
+  { username: "odemawear", category: "Streetwear", website: "https://odemawear.com", note: "" },
+  { username: "asiamixx_man", category: "Streetwear", website: "", note: "" },
+  { username: "asiamixx_moskva", category: "International", website: "", note: "" },
+  { username: "suvenehomme", category: "International", website: "https://suvene.de", note: "" },
+  { username: "kalaamode", category: "Streetwear", website: "", note: "" },
+  { username: "zagmin", category: "Streetwear", website: "", note: "" },
+  { username: "sportpacks_", category: "Sportswear", website: "https://sportpacks.de", note: "" },
+  { username: "pelak_collection", category: "Streetwear", website: "", note: "" },
+  { username: "sanethreadss", category: "Streetwear", website: "https://sanethreads.com", note: "" },
   { username: "zagmin_shoes", category: "Shoes", website: "", note: "" },
-  { username: "virastak", category: "Clothes", website: "", note: "" },
-  { username: "beseza_collection", category: "Clothes", website: "", note: "" },
-  { username: "roverman_", category: "Clothes", website: "https://roverman.co", note: "" },
-  { username: "bro.sis.wear", category: "Clothes", website: "", note: "" },
-  { username: "armo_collection", category: "Clothes", website: "https://armocollection.com", note: "" },
-  { username: "mylowear", category: "Clothes", website: "", note: "" },
-  { username: "roomroom_st_", category: "Clothes", website: "", note: "" },
-  { username: "hoojree", category: "Clothes", website: "", note: "" },
-  { username: "footballwithisg", category: "Sports", website: "", note: "" },
-  { username: "dieng_salla_sports", category: "Sports", website: "", note: "" },
-  { username: "restyle.astana", category: "Clothes", website: "", note: "" },
-  { username: "fashionlookvasaiz", category: "Clothes", website: "", note: "" },
-  { username: "troika_kg.moskva", category: "Clothes", website: "", note: "" },
-  { username: "khanluxury", category: "Clothes", website: "", note: "" },
-  { username: "monse.astana", category: "Clothes", website: "", note: "" },
-  { username: "thelooks__1", category: "Dar", website: "", note: "Mostly sweaters" },
-  { username: "jeffstore_tzz", category: "Dar", website: "", note: "Mostly baggy track (35k)" },
-  { username: "p_clo255", category: "Dar", website: "", note: "Mostly t-shirts (Very cheap)" }
+  { username: "virastak", category: "Streetwear", website: "", note: "" },
+  { username: "beseza_collection", category: "Streetwear", website: "", note: "" },
+  { username: "roverman_", category: "Streetwear", website: "https://roverman.co", note: "" },
+  { username: "bro.sis.wear", category: "Streetwear", website: "", note: "" },
+  { username: "armo_collection", category: "Streetwear", website: "https://armocollection.com", note: "" },
+  { username: "mylowear", category: "Streetwear", website: "", note: "" },
+  { username: "roomroom_st_", category: "Streetwear", website: "", note: "" },
+  { username: "hoojree", category: "Streetwear", website: "", note: "" },
+  { username: "footballwithisg", category: "Sportswear", website: "", note: "" },
+  { username: "dieng_salla_sports", category: "Sportswear", website: "", note: "" },
+  { username: "restyle.astana", category: "International", website: "", note: "" },
+  { username: "fashionlookvasaiz", category: "Streetwear", website: "", note: "" },
+  { username: "troika_kg.moskva", category: "International", website: "", note: "" },
+  { username: "khanluxury", category: "Luxury", website: "", note: "" },
+  { username: "monse.astana", category: "International", website: "", note: "" },
+  { username: "thelooks__1", category: "Local (Dar)", website: "", note: "Mostly sweaters" },
+  { username: "jeffstore_tzz", category: "Local (Dar)", website: "", note: "Mostly baggy track (35k)" },
+  { username: "p_clo255", category: "Local (Dar)", website: "", note: "Mostly t-shirts (Very cheap)" }
 ];
-/* ================================================ */
+/* ====================== */
+
+const STORAGE_KEY = "fit-finds-profiles";
+let PROFILES = loadProfiles();
+let active = "All";
+let sortBy = "name";
 
 const grid = document.getElementById("grid");
 const chips = document.getElementById("chips");
 const q = document.getElementById("q");
-const count = document.getElementById("count");
-let active = "All";
+const countEl = document.getElementById("count");
+const sortEl = document.getElementById("sort");
+const adminBar = document.getElementById("adminBar");
+const toast = document.getElementById("toast");
 
-const cats = ["All"].concat(Array.from(new Set(PROFILES.map(function(p) { return p.category; }).filter(Boolean))));
-cats.forEach(function(c) {
-  const b = document.createElement("button");
-  b.className = "chip" + (c === active ? " on" : "");
-  b.textContent = c;
-  b.onclick = function() {
-    active = c;
-    Array.from(chips.children).forEach(function(x) {
-      x.classList.toggle("on", x.textContent === c);
-    });
-    render();
-  };
-  chips.appendChild(b);
-});
+function loadProfiles() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length) return parsed;
+    }
+  } catch (e) {}
+  return DEFAULT_PROFILES.map(function(p) { return Object.assign({}, p); });
+}
+
+function saveProfiles() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(PROFILES));
+}
+
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(function() { toast.classList.remove("show"); }, 2200);
+}
+
+function buildChips() {
+  chips.innerHTML = "";
+  const cats = ["All"].concat(
+    Array.from(new Set(PROFILES.map(function(p) { return p.category; }).filter(Boolean))).sort()
+  );
+  cats.forEach(function(c) {
+    const b = document.createElement("button");
+    b.className = "chip" + (c === active ? " on" : "");
+    b.textContent = c;
+    b.onclick = function() {
+      active = c;
+      Array.from(chips.children).forEach(function(x) {
+        x.classList.toggle("on", x.textContent === c);
+      });
+      render();
+    };
+    chips.appendChild(b);
+  });
+}
+
+function sortList(list) {
+  return list.slice().sort(function(a, b) {
+    if (sortBy === "website") {
+      const aw = a.website ? 0 : 1;
+      const bw = b.website ? 0 : 1;
+      if (aw !== bw) return aw - bw;
+      return (a.username || "").localeCompare(b.username || "");
+    }
+    if (sortBy === "dar") {
+      const ad = a.category === "Local (Dar)" ? 0 : 1;
+      const bd = b.category === "Local (Dar)" ? 0 : 1;
+      if (ad !== bd) return ad - bd;
+      return (a.username || "").localeCompare(b.username || "");
+    }
+    if (sortBy === "category") {
+      const c = (a.category || "").localeCompare(b.category || "");
+      if (c !== 0) return c;
+      return (a.username || "").localeCompare(b.username || "");
+    }
+    return (a.username || "").localeCompare(b.username || "");
+  });
+}
+
+function avatarUrl(username) {
+  return "https://unavatar.io/instagram/" + encodeURIComponent(username) + "?fallback=false";
+}
 
 function render() {
   const term = q.value.trim().toLowerCase();
-  const list = PROFILES.filter(function(p) {
+  let list = PROFILES.filter(function(p) {
     const matchesCat = active === "All" || p.category === active;
-    const matchesSearch = !term || [p.username, p.category, p.note].join(" ").toLowerCase().indexOf(term) !== -1;
+    const matchesSearch = !term ||
+      [p.username, p.category, p.note].join(" ").toLowerCase().indexOf(term) !== -1;
     return matchesCat && matchesSearch;
   });
+  list = sortList(list);
 
-  count.textContent = list.length + " of " + PROFILES.length + " accounts";
+  countEl.textContent = list.length + " of " + PROFILES.length + " accounts";
   grid.innerHTML = "";
 
   if (!list.length) {
@@ -121,16 +303,34 @@ function render() {
     const card = document.createElement("div");
     card.className = "card";
 
+    const top = document.createElement("div");
+    top.className = "card-top";
+
+    const img = document.createElement("img");
+    img.className = "avatar";
+    img.alt = "";
+    img.loading = "lazy";
+    img.src = avatarUrl(name);
+    img.onerror = function() {
+      const fb = document.createElement("div");
+      fb.className = "avatar-fallback";
+      fb.textContent = (name.charAt(0) || "?").toUpperCase();
+      img.replaceWith(fb);
+    };
+    top.appendChild(img);
+
+    const info = document.createElement("div");
     const h3 = document.createElement("h3");
     h3.textContent = "@" + name;
-    card.appendChild(h3);
-
+    info.appendChild(h3);
     if (p.category) {
       const tag = document.createElement("span");
       tag.className = "tag";
       tag.textContent = p.category;
-      card.appendChild(tag);
+      info.appendChild(tag);
     }
+    top.appendChild(info);
+    card.appendChild(top);
 
     if (p.note) {
       const note = document.createElement("p");
@@ -154,7 +354,7 @@ function render() {
       const web = document.createElement("a");
       web.target = "_blank";
       web.rel = "noopener";
-      web.href = p.website;
+      web.href = p.website.indexOf("http") === 0 ? p.website : "https://" + p.website;
       web.textContent = "Website";
       btns.appendChild(web);
     }
@@ -165,6 +365,89 @@ function render() {
 }
 
 q.addEventListener("input", render);
+sortEl.addEventListener("change", function() {
+  sortBy = sortEl.value;
+  render();
+});
+
+/* Admin: open by tapping title 5 times */
+let titleTaps = 0;
+let titleTimer;
+document.getElementById("title").addEventListener("click", function() {
+  titleTaps++;
+  clearTimeout(titleTimer);
+  titleTimer = setTimeout(function() { titleTaps = 0; }, 800);
+  if (titleTaps >= 5) {
+    titleTaps = 0;
+    adminBar.classList.add("open");
+  }
+});
+
+document.getElementById("aClose").onclick = function() {
+  adminBar.classList.remove("open");
+};
+
+document.getElementById("aAdd").onclick = function() {
+  const username = document.getElementById("aUser").value.trim().replace(/^@/, "");
+  if (!username) {
+    showToast("Username required");
+    return;
+  }
+  const category = document.getElementById("aCat").value;
+  let website = document.getElementById("aWeb").value.trim();
+  const note = document.getElementById("aNote").value.trim();
+  if (website && website.indexOf("http") !== 0) website = "https://" + website;
+
+  const idx = PROFILES.findIndex(function(p) {
+    return (p.username || "").toLowerCase() === username.toLowerCase();
+  });
+  const entry = { username: username, category: category, website: website, note: note };
+  if (idx >= 0) {
+    PROFILES[idx] = entry;
+    showToast("Updated @" + username);
+  } else {
+    PROFILES.push(entry);
+    showToast("Added @" + username);
+  }
+  saveProfiles();
+  buildChips();
+  render();
+  document.getElementById("aUser").value = "";
+  document.getElementById("aWeb").value = "";
+  document.getElementById("aNote").value = "";
+};
+
+document.getElementById("aExport").onclick = function() {
+  const text = "const DEFAULT_PROFILES = " +
+    JSON.stringify(PROFILES, null, 2)
+      .replace(/"([^\"]+)":/g, "$1:")
+      .replace(/"/g, "'\"")
+      .replace(/'\"/g, "\"") +
+    ";";
+  // simpler export as JSON
+  const json = JSON.stringify(PROFILES, null, 2);
+  navigator.clipboard.writeText(json).then(function() {
+    showToast("Copied to clipboard");
+  }).catch(function() {
+    prompt("Copy this data:", json);
+  });
+};
+
+document.getElementById("aReset").onclick = function() {
+  if (!confirm("Reset to original list? Local changes will be lost.")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  PROFILES = DEFAULT_PROFILES.map(function(p) { return Object.assign({}, p); });
+  buildChips();
+  render();
+  showToast("Reset done");
+};
+
+// PWA
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js").catch(function() {});
+}
+
+buildChips();
 render();
 </script>
 </body>
